@@ -120,3 +120,4 @@ const locationHandler = () => {
 
 searchButton.addEventListener("click", searchHandler);
 locationIcon.addEventListener("click", locationHandler);
+// time for a break 
