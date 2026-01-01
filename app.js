@@ -1,4 +1,5 @@
 import getWeatherData from "./utils/httpReq.js";
+import { showModal, removeModal } from "./utils/modal.js";
 
 const DAYS = [
   "sunday",
@@ -15,8 +16,11 @@ const searchButton = document.querySelector("button");
 const weatherContainer = document.querySelector("#weather");
 const forecastContainer = document.querySelector("#forecast");
 const locationIcon = document.querySelector("#location");
+const modalButton = document.querySelector("#modal-button");
 
 const renderCurrentWeather = (data) => {
+  if (!data) return;
+
   const weatherJSX = `
   <h1>${data.name}, ${data.sys.country}</h1>
   <div id="main">
@@ -39,6 +43,8 @@ const getWeekDay = (date) => {
 };
 
 const renderForecastWeather = (data) => {
+  if (!data) return;
+
   forecastContainer.innerHTML = "";
   data = data.list.filter((object) => object.dt_txt.endsWith("12:00:00"));
   data.forEach((i) => {
@@ -59,8 +65,10 @@ const renderForecastWeather = (data) => {
 const searchHandler = async () => {
   const cityName = searchInput.value;
   if (!cityName) {
-    alert("please enter city name");
+    showModal("Please enter city name");
+    return;
   }
+
   const currentData = await getWeatherData("current", cityName);
   renderCurrentWeather(currentData);
   const forecastData = await getWeatherData("forecast", cityName);
@@ -75,7 +83,7 @@ const positionCallback = async (position) => {
 };
 
 const errorCallback = (error) => {
-  console.log(error.message);
+  showModal(error.message);
 };
 
 const locationHandler = () => {
@@ -88,4 +96,4 @@ const locationHandler = () => {
 
 searchButton.addEventListener("click", searchHandler);
 locationIcon.addEventListener("click", locationHandler);
-// time for a break
+modalButton.addEventListener("click", removeModal);
